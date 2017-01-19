@@ -10,9 +10,9 @@ import IconMenu from 'material-ui/IconMenu'
 import MenuItem from 'material-ui/MenuItem'
 export default class Header extends React.Component {
     render() {
-   
+      
       return (
-        <AppBar title="Welcome User" iconElementLeft={<IconButton><ActionBugReport /></IconButton>}
+        <AppBar title="Welcome" iconElementLeft={<IconButton><ActionBugReport /></IconButton>}
         iconElementRight={<IconMenu iconButtonElement={<IconButton touch={true}>
           <NavigationExpandMoreIcon />                     
           </IconButton>                     

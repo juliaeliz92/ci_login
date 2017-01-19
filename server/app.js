@@ -1,16 +1,16 @@
 const express = require('express');
 const app = express();
-const passport = require('passport');
-const GitHubStrategy = require('passport-github').Strategy;
 const cookieParser = require('cookie-parser');
-const session = require('express-session');
-const methodOverride = require('method-override');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const port = process.env.PORT || 9080;
 const pipelineConfigRoute=require('./route/pipelineConfig.route')
 const projectConfigRoute=require('./route/projectsConfig.route')
 const executionsConfigRoute=require('./route/executionsConfig.route');
+const http = require('http').Server(app);
+const config = require('./config');
+const path = require('path');
+const _ = require('lodash');
 
 app.use(function(req, res, next) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -20,10 +20,6 @@ app.use(function(req, res, next) {
 });
 
 app.use(cookieParser());
-app.use(session({secret: '6d3ffc81a5d35d3daea6236580bd57339f969281'}));
-app.use(passport.initialize());
-app.use(passport.session());
-app.use(methodOverride());
 app.use(bodyParser());
 
 mongoose.connect('mongodb://localhost:27017/Database_CI');
@@ -32,30 +28,47 @@ app.use('/',executionsConfigRoute);
 app.use('/',pipelineConfigRoute);
 app.use('/',projectConfigRoute);
 
-passport.use(new GitHubStrategy({
-  clientID:'1f9e50435994ec317a50',
-  clientSecret:'6d3ffc81a5d35d3daea6236580bd57339f969281',
-  callbackURL:'http://127.0.0.1:3000/auth/github/callback'
-},function(accessToken,refreshToken,profile,done,projects)
-{
-  done(null,{
-    accessToken: accessToken,
-    profile: profile
-  });
-}));
-passport.serializeUser(function(user,done){
-  done(null, user);
-});
-passport.deserializeUser(function(user,done)
-{
-  done(null,user);
+app.get('/',(req, res) => {
+  res.send('Hello, World!');
 });
 
-app.get('/auth/github', passport.authenticate('github'));
+function createApp() {
+  const app = express();
+  return app;
+}
 
-app.get('/auth/callback', passport.authenticate('github',{failureRedirect: '/'}),
-function(req,res){
-  res.redirect('/createRepo')});
+function setupStaticRoutes(app) {
+  app.use(express.static(__dirname + '/public'));
+  return app;
+}
+
+function setupMiddlewares(app) {
+  app.use(require('cookie-parser')());
+}
+
+function setupRestRoutes(app) {
+  app.use('/api/ci', require(path.join(__dirname, 'api')));
+  return app;
+}
+
+
+module.exports = function(inputApp, inputOptions) {
+  const app = inputApp || createApp();
+  const options = inputOptions || {};
+
+  _.defaults(options, {static: true, rest: true});
+
+  if(options.static) {
+    setupStaticRoutes(app);
+  }
+
+  if(options.rest) {
+    setupMiddlewares(app);
+    setupRestRoutes(app);
+  }
+
+  return app;
+};
 
 app.listen(port, function() {
   console.log('Express App listening on port ', port);

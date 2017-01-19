@@ -12,7 +12,7 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 import Branch from './Branch'
 import CreatePipeline from './CreatePipeline'
 import BuildReport from './BuildReport'
-import RubericSettings from './RubericSetting'
+import RubericSettings from './RubericSetting';
 injectTapEventPlugin();
 
 const muiTheme = getMuiTheme({
@@ -27,8 +27,8 @@ ReactDOM.render(
    <MuiThemeProvider muiTheme={muiTheme}>
        <Router history={hashHistory}>
            <Route path="/" component={login}/>
-           <Route path="logout" component={login}/>
            <Route path="ownerName" component={App}>
+           <Route path="logout" component={login}/>
              <IndexRoute component={home}/>
              <Route path="createRepo" component={CreateProject}/>
              <Route path="repoName/branch" component={Branch}/>

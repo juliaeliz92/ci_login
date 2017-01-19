@@ -19,7 +19,8 @@ import cardImg from '../images/keepCalm.png'
 import gitLogo from '../images/gitLogo.png'
 import './App.css'
 import { Grid,Col,Row } from 'react-flexbox-grid/lib/index'
-import ActionBugReport from 'material-ui/svg-icons/action/bug-report'
+import ActionBugReport from 'material-ui/svg-icons/action/bug-report';
+import request from 'superagent';
 
 
 import Request from 'superagent';
@@ -28,19 +29,20 @@ class login extends React.Component {
 
 constructor(props) {
    super(props);
-   this.state={name:''};
-   this.loginGithub=this.loginGithub.bind(this);
- }
- loginGithub()
- {
-   Request
-   .get('http://localhost:9080/api/loginGithub')
-   .end(function(err,resp)
-   {
-         if (err) console.log(err);
-         console.log(resp);
-     })
- }
+   this.state={
+    githubUrl: ''
+  }
+}
+  componentDidMount () {
+    request.get('http://localhost:9080/api/ci/auth/github/login')
+           .set('Accept', 'application/json')
+          .end((err, res) => {
+              this.setState({githubUrl: res.text});
+          });
+   };
+  
+ 
+ 
    render() {
 
       return (
@@ -82,10 +84,11 @@ constructor(props) {
 
                 <CardActions >
 
-                  <Link to="/auth/github">
-                    <FlatButton secondary={true} hoverColor='#D1C4E9' label="Login With Github"/>
-                    </Link>
-                    
+                    <a href={this.state.githubUrl}>
+
+                    <FlatButton secondary={true} hoverColor='#D1C4E9' label="Login With Github" type="submit"/>
+
+                    </a>
 
                 </CardActions>
 
