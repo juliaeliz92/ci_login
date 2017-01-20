@@ -9,17 +9,27 @@ import NavigationExpandMoreIcon from 'material-ui/svg-icons/navigation/expand-mo
 import IconMenu from 'material-ui/IconMenu'
 import MenuItem from 'material-ui/MenuItem'
 export default class Header extends React.Component {
+  constructor()
+  {
+    super();
+    this.logout=this.logout.bind(this);
+  }
+  logout()
+  {
+    document.cookies= 'token=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+
+  }
     render() {
-      
+
       return (
         <AppBar title="Welcome" iconElementLeft={<IconButton><ActionBugReport /></IconButton>}
         iconElementRight={<IconMenu iconButtonElement={<IconButton touch={true}>
-          <NavigationExpandMoreIcon />                     
-          </IconButton>                     
+          <NavigationExpandMoreIcon />
+          </IconButton>
         }>
         <IndexLink  to="/ownerName" activeClassName="active"><MenuItem primaryText="Home" /></IndexLink>
-        <Link to="/logout" activeClassName="active"><MenuItem primaryText="Logout"/> </Link>                 
-         </IconMenu>}/>   
+        <Link to="/logout" activeClassName="active"><MenuItem primaryText="Logout" onClick={this.logout}/> </Link>
+         </IconMenu>}/>
       );
     }
 }

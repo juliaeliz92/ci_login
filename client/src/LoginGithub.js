@@ -22,9 +22,6 @@ import { Grid,Col,Row } from 'react-flexbox-grid/lib/index'
 import ActionBugReport from 'material-ui/svg-icons/action/bug-report';
 import request from 'superagent';
 
-
-import Request from 'superagent';
-
 class login extends React.Component {
 
 constructor(props) {
@@ -40,9 +37,9 @@ constructor(props) {
               this.setState({githubUrl: res.text});
           });
    };
-  
- 
- 
+
+
+
    render() {
 
       return (

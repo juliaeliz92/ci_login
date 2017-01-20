@@ -38,11 +38,10 @@ function getUser(token, callback) {
   .set('User-Agent', config.USER_AGENT)
   .set('Accept', 'application/json')
   .authBearer(token)
-  .end(function(err, response) {
+  .end(function(err, Response) {
+
    if(err) { callback(err); return; }
-   console.log(response.body);
-   localStorage.setItem("user",response.body);
-   callback(null, response.body);
+   callback(null, Response.body)
    return;
  }
  );
@@ -79,7 +78,7 @@ module.exports = {
             if(err3) { res.status(500).json(err3); return; }
               res
               .cookie('token', jwt)
-              .redirect('http://localhost:3000/#/ownerName/createRepo');
+              .redirect('http://localhost:3000/#/ownerName');
             return;
           });
         });
@@ -89,6 +88,7 @@ module.exports = {
     me: function(req, res) {
       const claims = req.claims;
       getUser(claims.accessToken, function(err, user) {
+        console.log(user);
         if(err) { res.status(500).err(err); return; }
         res.json(user);
       });
